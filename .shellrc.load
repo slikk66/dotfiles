@@ -12,5 +12,5 @@ alias b2d='boot2docker up && $(boot2docker shellinit)'
 alias whoaws='aws iam get-user'
 
 #load git complete
-. ~/.git-completion.bash
+. $HOME/.git-completion.bash
 
