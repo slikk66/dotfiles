@@ -7,9 +7,14 @@ export PATH=$PATH:$HOME/bin
 
 ####
 # put any bash/zsh customizations in here
+export LC_ALL=en_US.UTF-8  
+export LANG=en_US.UTF-8
+export PYTHONIOENCODING=UTF-8
 
-alias b2d='boot2docker up && $(boot2docker shellinit)'
-alias whoaws='aws iam get-user'
+export NVM_DIR="$HOME/.nvm"
+  . "$(brew --prefix nvm)/nvm.sh"
+
+. $HOME/bin/.bash_prompt
 
 #load git complete
 . $HOME/.git-completion.bash
