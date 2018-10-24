@@ -1,0 +1,19 @@
+#!/bin/bash
+
+docker run --rm -it \
+    -e HOME=/root \
+    -e USER=root \
+    -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN \
+    -e AWS_DEFAULT_REGION -e AWS_DEFAULT_PROFILE -e AWS_CONFIG_FILE \
+    -e ARM_SUBSCRIPTION_ID \
+    -e ARM_CLIENT_ID \
+    -e ARM_CLIENT_SECRET \
+    -e ARM_TENANT_ID \
+    -e ARM_ENVIRONMENT \
+    -e TF_VAR_arm_subscription_id \
+    -e TF_VAR_arm_client_id \
+    -e TF_VAR_arm_client_secret \
+    -e TF_VAR_arm_tenant_id \
+    -v $(pwd):/data \
+    -w /data \
+    ${USER}/deploytools:latest "$@"
