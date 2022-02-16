@@ -1,0 +1,6 @@
+#!/bin/zsh
+export AWS_PROFILE=$1
+export AWS_DEFAULT_PROFILE=$1
+echo "Jumping into AWS profile $1.."
+OUT=$(aws sts get-caller-identity | jq)
+echo $OUT

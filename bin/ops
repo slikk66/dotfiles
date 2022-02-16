@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# CI/CD pipes will pass in a CONTAINER to use, default is to use the local user's latest image (laptop mode)
+if [[ "${CONTAINER}" == "" ]]; then
+    CONTAINER=${USER}/ops:latest
+fi
+# Override interactive mode for CI/CD pipes
+if [[ "${NONINTERACTIVE}" == "" ]]; then
+    FLAGS="-it"
+else
+    FLAGS=""
+fi
+
+# Local data mount
+LOCAL_DATA="-v ${PWD}:/data"
+
+# DEV option to have editable shared pulumi
+if [[ "${MOUNT_SHARED_PULUMI}" != "" ]]; then
+    PULUMI_DATA="-v ${PWD}/${MOUNT_SHARED_PULUMI}/pulumi:/data/pulumi"
+fi
+
+INFRA_DATA="-v ${PWD}/pulumi/infra:/data/pulumi/infra"
+
+# debug/development options
+if [[ "${NO_MOUNT_AWS}" == "" ]]; then
+    AWS_DATA="-v ${HOME}/.aws:/root/.aws"
+fi
+if [[ "${NO_MOUNT_SSH}" == "" ]]; then
+    SSH_DATA="-v ${HOME}/.ssh:/root/.ssh"
+fi
+
+# run bootstrapped image with remove flag
+docker run --rm ${FLAGS} \
+    -e HOME=/root \
+    -e AWS_PROFILE \
+    -e AWS_DEFAULT_PROFILE \
+    -e AWS_ACCESS_KEY_ID \
+    -e AWS_SECRET_ACCESS_KEY \
+    -e AWS_SESSION_TOKEN \
+    -e TASK_REVISION \
+    -e PULUMI_CONFIG_PASSPHRASE="" \
+    ${LOCAL_DATA} \
+    ${PULUMI_DATA} \
+    ${INFRA_DATA} \
+    ${SSH_DATA} \
+    ${AWS_DATA} \
+    -w /data \
+    ${CONTAINER} "$@"

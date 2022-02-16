@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# same container for all (for now)
+if [[ "${CONTAINER_NAME}" == "" ]]; then
+    CONTAINER_NAME=${USER}/infraops:latest
+fi
+# Overrides
+if [[ "${NONINTERACTIVE}" == "" ]]; then
+    FLAGS="-it"
+else
+    FLAGS=""
+fi
+
+if [[ "${NO_MOUNT_AWS}" == "" ]]; then
+    MOUNT_AWS="-v ${HOME}/.aws:/root/.aws"
+fi
+
+if [[ "${NO_MOUNT_SSH}" == "" ]]; then
+    MOUNT_SSH="-v ${HOME}/.ssh:/root/.ssh"
+fi
+
+if [[ "${MOUNT_PYTHON}" != "" ]]; then
+    PYTHON_DATA="-v ${HOME}/Development/luckydiceteam/infrastructure/python-pkg:/python-pkg"
+fi
+
+if [[ "${MOUNT_LOCAL}" != "" ]]; then
+    LOCAL_DATA="-v ${PWD}:/data"
+fi
+
+docker run --rm ${FLAGS} \
+    -e HOME=/root \
+    -e AWS_PROFILE \
+    -e AWS_DEFAULT_PROFILE \
+    -e AWS_ACCESS_KEY_ID \
+    -e AWS_SECRET_ACCESS_KEY \
+    -e AWS_SESSION_TOKEN \
+    -e AWS_CONTAINER_CREDENTIALS_RELATIVE_URI \
+    -e TASK_REVISION \
+    -e PULUMI_CONFIG_PASSPHRASE="" \
+    ${LOCAL_DATA} \
+    ${PYTHON_DATA} \
+    ${MOUNT_SSH} \
+    ${MOUNT_AWS} \
+    -w /data \
+    ${CONTAINER_NAME} "$@"

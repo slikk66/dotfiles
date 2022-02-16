@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+# CI/CD pipes will pass in a CONTAINER_NAME to use, default is to use the local user's latest image (laptop mode)
+if [[ "${CONTAINER_NAME}" == "" ]]; then
+    CONTAINER_NAME=${USER}/devops:latest
+fi
+# Override interactive mode for CI/CD pipes
+if [[ "${NONINTERACTIVE}" == "" ]]; then
+    FLAGS="-it"
+else
+    FLAGS=""
+fi
+
+# Local data mount
+LOCAL_DATA="-v ${PWD}:/data/local"
+
+# Override infra mount path
+if [[ "${MOUNT_INFRA}" == "" ]]; then
+    INFRA_PATH=""
+else
+    INFRA_PATH="/${MOUNT_INFRA}"
+fi
+
+INFRA_DATA="-v ${PWD}${INFRA_PATH}/pulumi/infra/aws:/data/pulumi/infra/aws"
+
+# debug/development options
+if [[ "${NO_MOUNT_AWS}" == "" ]]; then
+    AWS_DATA="-v ${HOME}/.aws:/root/.aws"
+fi
+if [[ "${NO_MOUNT_SSH}" == "" ]]; then
+    SSH_DATA="-v ${HOME}/.ssh:/root/.ssh"
+fi
+if [[ "${MOUNT_PYTHON}" != "" ]]; then
+    PYTHON_DATA="-v ${PWD}/../../luckydayteam/devops-docker/python-pkg:/data/python-pkg"
+fi
+if [[ "${MOUNT_PULUMI}" != "" ]]; then
+    PULUMI_DATA="-v ${PWD}/pulumi:/data/pulumi"
+fi
+
+# run bootstrapped image with remove flag
+docker run --rm ${FLAGS} \
+    -e HOME=/root \
+    -e AWS_PROFILE \
+    -e AWS_DEFAULT_PROFILE \
+    -e AWS_ACCESS_KEY_ID \
+    -e AWS_SECRET_ACCESS_KEY \
+    -e AWS_SESSION_TOKEN \
+    -e TASK_REVISION \
+    -e PULUMI_CONFIG_PASSPHRASE="" \
+    ${PULUMI_DATA} \
+    ${INFRA_DATA} \
+    ${LOCAL_DATA} \
+    ${PYTHON_DATA} \
+    ${SSH_DATA} \
+    ${AWS_DATA} \
+    -w /data \
+    ${CONTAINER_NAME} "$@"

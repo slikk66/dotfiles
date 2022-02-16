@@ -1,0 +1,34 @@
+# include what you want
+
+export PATH=$PATH:$HOME/bin:$HOME/.pulumi/bin:$HOME/bin/gam
+
+export PATH="/usr/local/opt/php@7.4/bin:$PATH"                                                                                                                                                                                 
+export PATH="/usr/local/opt/php@7.4/sbin:$PATH"   
+
+# add this to the .bashrc or .zshrc (done automatically by dfm):
+# . $HOME/.shellrc.load
+
+####
+# put any bash/zsh customizations in here
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
+# auto-completion
+[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
+
+. $HOME/bin/python3-venv-manager.bash
+
+alias dev="cd ~/Development/"
+alias k="kubectl"
+
+export GOPATH=$HOME/go
+export GOROOT="$(brew --prefix golang)/libexec"
+export PATH="$PATH:${GOPATH}/bin:${GOROOT}/bin"
+
+alias gam="$HOME/bin/gam/gam"
+
+bindkey \^u backward-kill-line
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
