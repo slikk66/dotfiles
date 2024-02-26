@@ -39,6 +39,7 @@ docker run --rm ${FLAGS} \
     -e AWS_SESSION_TOKEN \
     -e TASK_REVISION \
     -e PULUMI_CONFIG_PASSPHRASE="" \
+    -e PULUMI_SELF_MANAGED_STATE_LEGACY_LAYOUT=1 \
     ${LOCAL_DATA} \
     ${PULUMI_DATA} \
     ${INFRA_DATA} \
