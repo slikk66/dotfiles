@@ -1,13 +1,57 @@
 # include what you want
 export ZSH_DISABLE_COMPFIX="true"
 
-export PATH=$PATH:$HOME/bin:$HOME/.pulumi/bin
-export PATH="/usr/local/opt/php@7.4/bin:$PATH"
-export PATH="/usr/local/opt/php@7.4/sbin:$PATH"
-export PATH="$HOME/.amplify/bin:$PATH"
-export PATH="$HOME/Development/flutter/bin:$HOME/Library/Android/sdk/cmdline-tools/latest/bin:$PATH"
+#pulumi disable password stuff
+export PULUMI_CONFIG_PASSPHRASE=""
 
-source /usr/local/opt/chruby/share/chruby/chruby.sh
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/dbilleci/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
+
+#aliases
+alias python=python3
+
+tmux() {
+    if [[ "$1" == "new" ]]; then
+        shift  # Remove "new" from the arguments
+        ~/bin/tmux-8pane.sh "$@"
+    else
+        command tmux "$@"
+    fi
+}
+
+#docker force to use intel
+docker() {
+    echo "Docker function entered"
+    case "$1" in
+        "run")
+            echo "Running docker run"
+            shift
+            command docker run --platform linux/amd64 "$@"
+            ;;
+        "build")
+            echo "Running docker build"
+            shift
+            command docker build --platform linux/amd64 "$@"
+            ;;
+        *)
+            echo "Default docker command"
+            command docker "$@"
+            ;;
+    esac
+}
+
+#homebrew stuff
+export PATH=$PATH:$HOME/bin:$HOME/.pulumi/bin
+export HOMEBREW_PREFIX="/opt/homebrew";
+export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
+export HOMEBREW_REPOSITORY="/opt/homebrew";
+fpath[1,0]="/opt/homebrew/share/zsh/site-functions";
+PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/dbilleci/bin:/Users/dbilleci/.pulumi/bin"; export PATH;
+[ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}";
+export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
 
 ####
 # put any bash/zsh customizations in here
@@ -25,9 +69,8 @@ alias k="kubectl"
 bindkey \^u backward-kill-line
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
+[ -s "$(brew --prefix)/opt/nvm/nvm.sh" ] && \. "$(brew --prefix)/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/dbilleci/.oh-my-zsh"
